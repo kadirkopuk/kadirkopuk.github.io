@@ -3,36 +3,166 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tiki Taka Jam – Support</title>
+<title>Tiki Taka Jam: Football Puzzle</title>
+<meta name="description" content="Slide the defenders, open the passing lane, score! A football puzzle game with 200 levels, a daily puzzle and real tactics.">
+<!-- Link previews (WhatsApp, iMessage, X...) -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kadirkopuk.github.io/tiki-taka-jam/">
+<meta property="og:title" content="Tiki Taka Jam: Football Puzzle">
+<meta property="og:description" content="Slide the defenders, open the passing lane, score! ⚽ 200 levels and a new puzzle every day.">
+<meta property="og:image" content="https://kadirkopuk.github.io/tiki-taka-jam/img/share.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<!-- Safari on iPhone shows an "Open / Get" banner for the game -->
+<meta name="apple-itunes-app" content="app-id=6827782633">
+<link rel="icon" href="img/icon.png">
+<link rel="apple-touch-icon" href="img/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
 <style>
-  body { font-family: -apple-system, system-ui, sans-serif; max-width: 720px; margin: 0 auto; padding: 24px 16px 48px; line-height: 1.55; color: #10231a; background: #fff8ec; }
-  h1 { color: #0f3d24; margin-bottom: 4px; }
-  h2 { color: #0f3d24; margin-top: 28px; }
-  a { color: #0f6b3a; }
-  hr { border: none; border-top: 1px solid #d9cdb8; margin: 40px 0; }
+  :root { --green: #0f3d24; --deep: #0a2c1a; --pitch: #1e7a46; --gold: #ffc83d; --orange: #ff7a1a; --cream: #fff8ec; --ink: #10231a; --mint: #bfe6cc; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Nunito, -apple-system, system-ui, sans-serif; color: #fff; background: var(--green); line-height: 1.55; }
+  a { color: inherit; }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+  /* Language switch */
+  .lang { position: absolute; top: 14px; right: 16px; display: flex; gap: 6px; z-index: 2; }
+  .lang button { font: 800 13px Nunito, sans-serif; color: var(--mint); background: rgba(0,0,0,.25); border: 1.5px solid transparent; border-radius: 999px; padding: 5px 12px; cursor: pointer; }
+  .lang button.on { color: var(--ink); background: var(--gold); }
+  [data-l] { display: none; }
+  html[lang="en"] [data-l="en"], html[lang="tr"] [data-l="tr"] { display: revert; }
+  html[lang="en"] .shots[data-l="en"], html[lang="tr"] .shots[data-l="tr"] { display: flex; }
+  /* Hero */
+  .hero { position: relative; overflow: hidden; text-align: center; padding: 64px 0 40px;
+    background: repeating-linear-gradient(180deg, #1e7a46 0 64px, #1a6e3f 64px 128px); }
+  .hero::after { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 30%, transparent 30%, rgba(10,44,26,.75) 100%); pointer-events: none; }
+  .hero > .wrap { position: relative; z-index: 1; }
+  .lang { z-index: 3; }
+  .logo { width: min(340px, 78vw); height: auto; filter: drop-shadow(0 10px 18px rgba(0,0,0,.35)); }
+  .tag { font: 800 clamp(22px, 5vw, 30px) 'Baloo 2', sans-serif; margin: 8px 0 4px; }
+  .sub { color: var(--mint); font-weight: 700; font-size: 17px; margin: 0 auto 24px; max-width: 520px; }
+  .stores { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center; }
+  .appstore { display: inline-flex; align-items: center; gap: 10px; height: 56px; padding: 0 20px 0 16px; border-radius: 12px; background: #000; color: #fff; text-decoration: none; border: 1.5px solid #a6a6a6; }
+  .appstore svg { width: 28px; height: 28px; }
+  .appstore small { display: block; font: 600 11px -apple-system, system-ui, sans-serif; line-height: 1.1; }
+  .appstore strong { display: block; font: 600 22px -apple-system, system-ui, sans-serif; line-height: 1.1; letter-spacing: -.3px; }
+  .soon { display: inline-flex; align-items: center; gap: 8px; height: 54px; padding: 0 18px; border-radius: 12px; border: 2px dashed rgba(255,255,255,.45); color: var(--mint); font-weight: 800; font-size: 15px; }
+  .soon svg { width: 22px; height: 22px; }
+  /* Screenshots */
+  .shots { gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 28px 16px 8px; margin: 0 auto; max-width: 1100px; }
+  .shots img { width: 220px; height: auto; border-radius: 22px; box-shadow: 0 12px 28px rgba(0,0,0,.35); scroll-snap-align: center; flex: none; }
+  @media (min-width: 960px) { .shots { justify-content: center; } }
+  /* Features */
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; padding: 32px 0 8px; }
+  .feature { background: var(--deep); border-radius: 18px; padding: 18px; }
+  .feature b { display: block; font: 800 19px 'Baloo 2', sans-serif; color: var(--gold); margin-bottom: 2px; }
+  .feature span { color: var(--mint); font-weight: 700; }
+  /* Support */
+  .support { background: var(--cream); color: var(--ink); border-radius: 22px; padding: 24px 22px 10px; margin: 36px 0 24px; }
+  .support h2 { font: 800 26px 'Baloo 2', sans-serif; margin: 0 0 6px; color: var(--green); }
+  .support p { margin: 0 0 12px; }
+  .support a { color: #0f6b3a; font-weight: 800; }
+  footer { text-align: center; color: var(--mint); font-size: 14px; padding: 8px 0 36px; }
+  footer a { color: var(--gold); }
 </style>
 </head>
 <body>
-<h1>Tiki Taka Jam – Support</h1>
-<p>Questions, bug reports or ideas? Write to <strong><a href="mailto:kdrkpk12@gmail.com">kdrkpk12@gmail.com</a></strong>. Please include your device model and the level number if it is about a level.</p>
 
-<h2>FAQ</h2>
-<p><strong>I'm stuck on a level.</strong> Use a hint (light bulb), or Undo and try another order. Every level can be solved; the star bar shows how many moves the best solution needs.</p>
-<p><strong>I bought No Ads or Premium on a new phone.</strong> Open Settings and tap "Restore purchases".</p>
-<p><strong>I can't hear any sound on iPhone.</strong> The game follows the silent switch. Turn on "Sound in silent mode" in Settings.</p>
-<p><strong>Will I lose my progress?</strong> Progress is saved on your device. Deleting the game deletes it.</p>
-<p><strong>Privacy:</strong> <a href="privacy.html">Privacy Policy</a>. Ad privacy choices are in Settings (where required).</p>
+<section class="hero">
+  <div class="lang" role="group" aria-label="Language">
+    <button type="button" data-set="tr">TR</button>
+    <button type="button" data-set="en">EN</button>
+  </div>
+  <div class="wrap">
+    <img class="logo" src="img/logo.png" alt="Tiki Taka Jam" width="560" height="402">
+    <p class="tag"><span data-l="en">Open the passing lane, score the goal!</span><span data-l="tr">Pas yolunu aç, golü at!</span></p>
+    <p class="sub">
+      <span data-l="en">A football puzzle: slide the defenders, line up your passes, shoot. 200 levels and a new puzzle every day.</span>
+      <span data-l="tr">Futbol bulmacası: savunmacıları kaydır, paslarını hizala, şutu çek. 200 bölüm ve her gün yeni bir bulmaca.</span>
+    </p>
+    <div class="stores">
+      <a class="appstore" href="https://apps.apple.com/app/id6827782633">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.62c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.48.83-.72 0-1.82-.81-3-.79-1.54.02-2.96.9-3.76 2.27-1.6 2.78-.41 6.9 1.15 9.16.77 1.1 1.68 2.34 2.87 2.3 1.15-.05 1.59-.74 2.98-.74 1.39 0 1.78.74 3 .72 1.24-.02 2.02-1.12 2.78-2.23.88-1.28 1.24-2.52 1.26-2.58-.03-.01-2.42-.93-2.44-3.68zM14.1 5.88c.63-.77 1.06-1.83.94-2.88-.91.04-2.01.61-2.67 1.37-.58.67-1.1 1.76-.96 2.79 1.01.08 2.05-.52 2.69-1.28z"/></svg>
+        <span><small><span data-l="en">Download on the</span><span data-l="tr">İndirin:</span></small><strong>App Store</strong></span>
+      </a>
+      <span class="soon">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 9.4 6 2.7C5.4 2.4 4.8 2.8 4.8 3.5v17c0 .7.6 1.1 1.2.8l11.5-6.7 3-1.7c.6-.4.6-1.3 0-1.7l-3-1.8z"/></svg>
+        <span data-l="en">Android: coming soon</span><span data-l="tr">Android: çok yakında</span>
+      </span>
+    </div>
+  </div>
+</section>
 
-<hr>
+<div class="shots" data-l="en">
+  <img src="img/en_01.jpg" alt="" loading="lazy"><img src="img/en_02.jpg" alt="" loading="lazy"><img src="img/en_03.jpg" alt="" loading="lazy"><img src="img/en_04.jpg" alt="" loading="lazy">
+</div>
+<div class="shots" data-l="tr">
+  <img src="img/tr_01.jpg" alt="" loading="lazy"><img src="img/tr_02.jpg" alt="" loading="lazy"><img src="img/tr_03.jpg" alt="" loading="lazy"><img src="img/tr_04.jpg" alt="" loading="lazy">
+</div>
 
-<h1>Tiki Taka Jam – Destek</h1>
-<p>Soru, hata bildirimi ya da öneri için: <strong><a href="mailto:kdrkpk12@gmail.com">kdrkpk12@gmail.com</a></strong>. Bir bölümle ilgiliyse cihaz modelini ve bölüm numarasını yazarsanız seviniriz.</p>
+<main class="wrap">
+  <div class="features">
+    <div class="feature"><b><span data-l="en">200 levels</span><span data-l="tr">200 bölüm</span></b>
+      <span data-l="en">10 leagues, each with a new rule: offside, the playmaker, a moving keeper, mud, yellow cards…</span>
+      <span data-l="tr">10 lig, her birinde yeni bir kural: ofsayt, oyun kurucu, hareketli kaleci, çamur, sarı kart…</span></div>
+    <div class="feature"><b><span data-l="en">Daily puzzle</span><span data-l="tr">Günün bulmacası</span></b>
+      <span data-l="en">The same puzzle for everyone each day. Share your score and challenge your friends.</span>
+      <span data-l="tr">Her gün herkese aynı bulmaca. Skorunu paylaş, arkadaşlarına meydan oku.</span></div>
+    <div class="feature"><b><span data-l="en">Real tactics</span><span data-l="tr">Gerçek taktikler</span></b>
+      <span data-l="en">Win a league and unlock a tactic card: tiki-taka, the false nine, the Panenka…</span>
+      <span data-l="tr">Ligi kazan, taktik kartını aç: tiki-taka, sahte dokuz, Panenka…</span></div>
+    <div class="feature"><b><span data-l="en">Play offline</span><span data-l="tr">İnternetsiz oyna</span></b>
+      <span data-l="en">No account, no internet needed. Short levels for quick breaks.</span>
+      <span data-l="tr">Hesap yok, internet gerekmez. Kısa molalar için kısa bölümler.</span></div>
+  </div>
 
-<h2>Sık sorulanlar</h2>
-<p><strong>Bir bölümde takıldım.</strong> İpucu (ampul) kullanın ya da Geri Al ile başka bir sıra deneyin. Her bölüm çözülebilir; yıldız çubuğu en iyi çözümün kaç hamle olduğunu gösterir.</p>
-<p><strong>Reklamsız ya da Premium'u yeni telefonda almıştım.</strong> Ayarlar'dan "Satın alımları geri yükle"ye dokunun.</p>
-<p><strong>iPhone'da ses gelmiyor.</strong> Oyun sessiz moda uyar. Ayarlar'da "Sessiz modda da ses"i açın.</p>
-<p><strong>İlerlemem silinir mi?</strong> İlerleme cihazınızda saklanır. Oyunu silerseniz o da silinir.</p>
-<p><strong>Gizlilik:</strong> <a href="privacy.html">Gizlilik Politikası</a>. Reklam gizlilik seçenekleri (gereken ülkelerde) Ayarlar'dadır.</p>
+  <section class="support" id="support">
+    <div data-l="en">
+      <h2>Support</h2>
+      <p>Questions, bug reports or ideas? Write to <a href="mailto:kdrkpk12@gmail.com">kdrkpk12@gmail.com</a>. Please include your device model and the level number if it is about a level.</p>
+      <p><strong>I'm stuck on a level.</strong> Use a hint (light bulb), or Undo and try another order. Every level can be solved; the star bar shows how many moves the best solution needs.</p>
+      <p><strong>I bought No Ads or Premium on a new phone.</strong> Open Settings and tap "Restore purchases".</p>
+      <p><strong>I can't hear any sound on iPhone.</strong> The game follows the silent switch. Turn on "Sound in silent mode" in Settings.</p>
+      <p><strong>Will I lose my progress?</strong> Progress is saved on your device. Deleting the game deletes it.</p>
+      <p><strong>Privacy:</strong> <a href="privacy.html">Privacy Policy</a>. Ad privacy choices are in Settings (where required).</p>
+    </div>
+    <div data-l="tr">
+      <h2>Destek</h2>
+      <p>Soru, hata bildirimi ya da öneri için: <a href="mailto:kdrkpk12@gmail.com">kdrkpk12@gmail.com</a>. Bir bölümle ilgiliyse cihaz modelini ve bölüm numarasını yazarsanız seviniriz.</p>
+      <p><strong>Bir bölümde takıldım.</strong> İpucu (ampul) kullanın ya da Geri Al ile başka bir sıra deneyin. Her bölüm çözülebilir; yıldız çubuğu en iyi çözümün kaç hamle olduğunu gösterir.</p>
+      <p><strong>Reklamsız ya da Premium'u yeni telefonda almıştım.</strong> Ayarlar'dan "Satın alımları geri yükle"ye dokunun.</p>
+      <p><strong>iPhone'da ses gelmiyor.</strong> Oyun sessiz moda uyar. Ayarlar'da "Sessiz modda da ses"i açın.</p>
+      <p><strong>İlerlemem silinir mi?</strong> İlerleme cihazınızda saklanır. Oyunu silerseniz o da silinir.</p>
+      <p><strong>Gizlilik:</strong> <a href="privacy.html">Gizlilik Politikası</a>. Reklam gizlilik seçenekleri (gereken ülkelerde) Ayarlar'dadır.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  © 2026 Kadir Kopuk · <a href="privacy.html"><span data-l="en">Privacy Policy</span><span data-l="tr">Gizlilik Politikası</span></a> · <a href="mailto:kdrkpk12@gmail.com">kdrkpk12@gmail.com</a>
+</footer>
+
+<script>
+  // Turkish for Turkish phones, English otherwise; the buttons switch.
+  (function () {
+    var saved = null;
+    try { saved = localStorage.getItem('lang'); } catch (e) {}
+    var lang = saved || ((navigator.language || 'en').toLowerCase().indexOf('tr') === 0 ? 'tr' : 'en');
+    function set(l) {
+      document.documentElement.lang = l;
+      var b = document.querySelectorAll('.lang button');
+      for (var i = 0; i < b.length; i++) b[i].classList.toggle('on', b[i].getAttribute('data-set') === l);
+    }
+    set(lang);
+    document.querySelector('.lang').addEventListener('click', function (e) {
+      var l = e.target.getAttribute('data-set');
+      if (!l) return;
+      set(l);
+      try { localStorage.setItem('lang', l); } catch (e) {}
+    });
+  })();
+</script>
 </body>
 </html>
